@@ -12,7 +12,6 @@ const CameraComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [cameraAllowed, setCameraAllowed] = useState(false);
   const [photoTaken, setPhotoTaken] = useState(false);
   const [photoHiddenButton, setPhotoHiddenButton] = useState(false);
   const [loading, setLoading]=useState(false);
@@ -20,7 +19,7 @@ const CameraComponent: React.FC = () => {
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
 
   const startCamera = async (facingMode?: "user" | "environment") => {
-    setPhotoTaken(false)
+    setPhotoTaken(false);
     try {
       setError(null);
 
@@ -37,7 +36,7 @@ const CameraComponent: React.FC = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
-        setCameraAllowed(true);
+        localStorage.setItem('cameraAllowed', 'true');
       }
     } catch (err) {
       setError("Kamerani yoqishda xatolik. Iltimos, ruxsat bering.");
@@ -57,11 +56,10 @@ const CameraComponent: React.FC = () => {
       (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
       videoRef.current.srcObject = null;
     }
-    setCameraAllowed(false);
   };
 
   const captureImage = () => { 
-    
+    getLocation()
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
@@ -86,6 +84,7 @@ const CameraComponent: React.FC = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
+        localStorage.setItem("location", "true")
       },
       () => {
         setError("Joylashuvni olishda xatolik. Ruxsat bering.");
@@ -146,12 +145,13 @@ const CameraComponent: React.FC = () => {
   }, []);
 
     useEffect(()=>{
-      if (Boolean(location?.latitude) && cameraAllowed) {
-        setPhotoHiddenButton(true)
+      if (localStorage.getItem("cameraAllowed")==="true" && localStorage.getItem("location")==="true") {
+        setPhotoHiddenButton(true);
       }
-    },[location , cameraAllowed])
+    },[location])
 
-     
+ console.log(photoHiddenButton);
+       
 
   return (
     <div style={{
@@ -167,10 +167,11 @@ const CameraComponent: React.FC = () => {
      }}>
       <Toaster/>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display:(cameraAllowed && !photoTaken) ? "block" : "none", borderRadius:"10px" }}></video>}
+      {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display:(localStorage.getItem("cameraAllowed")==="true" && !photoTaken && photoHiddenButton) ? "block" : "none", borderRadius:"10px" }}></video>}
 
       {<canvas ref={canvasRef} style={{ width: "100%", display:photoTaken ? "block" : "none", borderRadius:"10px" }}></canvas>}
-      {!location && !cameraAllowed && !error && <p style={{ backgroundColor: "#E5E5FF",
+     
+      {!photoHiddenButton && !error && <p style={{ backgroundColor: "#E5E5FF",
          padding:"20px 30px",
           margin:"0 auto",
           borderRadius:"10px",
