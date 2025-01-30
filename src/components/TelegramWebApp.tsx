@@ -134,7 +134,7 @@ const CameraComponent: React.FC = () => {
        padding: "30px", 
       maxWidth: "450px",
        margin: "0 auto",
-       height:"100vh",
+       height:"75vh",
        display:"grid",
        placeContent:"center",
        gap:"10px"
