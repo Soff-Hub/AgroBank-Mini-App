@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { toast, Toaster } from 'react-hot-toast';
 
 const CameraComponent: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -100,8 +101,8 @@ const CameraComponent: React.FC = () => {
         },
       });
   
-      if (response.status === 200) {
-        alert("Rasm va joylashuv muvaffaqiyatli yuborildi!");
+      if (response.status === 201) {
+        toast.success("Rasm va joylashuv muvaffaqiyatli yuborildi!");
       } else {
         throw new Error("Serverga yuborishda xatolik yuz berdi.");
       }
@@ -131,7 +132,7 @@ const CameraComponent: React.FC = () => {
     <div style={{
        textAlign: "center",
        padding: "30px", 
-      maxWidth: "450px", width: "100%",
+      maxWidth: "450px",
        margin: "0 auto",
        height:"100vh",
        display:"grid",
@@ -139,6 +140,7 @@ const CameraComponent: React.FC = () => {
        gap:"10px"
 
      }}>
+      <Toaster/>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display:(cameraAllowed && !photoTaken) ? "block" : "none", borderRadius:"10px" }}></video>}
 
