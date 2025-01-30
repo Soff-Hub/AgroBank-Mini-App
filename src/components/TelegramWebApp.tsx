@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from 'react-hot-toast';
 
+
 const CameraComponent: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -14,6 +15,7 @@ const CameraComponent: React.FC = () => {
   const [cameraAllowed, setCameraAllowed] = useState(false);
   const [photoTaken, setPhotoTaken] = useState(false);
   const [photoHiddenButton, setPhotoHiddenButton] = useState(false);
+  const [loading, setLoading]=useState(false);
 
   const startCamera = async () => {
     setPhotoTaken(false)
@@ -76,7 +78,7 @@ const CameraComponent: React.FC = () => {
       setError("Rasm yoki joylashuv mavjud emas.");
       return;
     }
-  
+    setLoading(true)
     const canvas = canvasRef.current;
     const imageData = canvas.toDataURL("image/png"); 
   
@@ -109,6 +111,7 @@ const CameraComponent: React.FC = () => {
     } catch (err) {
       setError("Serverga ulanishda xatolik yuz berdi.");
     }
+    setLoading(false)
   };
 
   useEffect(() => {
@@ -137,7 +140,7 @@ const CameraComponent: React.FC = () => {
        height:"75vh",
        display:"grid",
        placeContent:"center",
-       gap:"10px"
+       gap:"10px",
 
      }}>
       <Toaster/>
@@ -148,7 +151,8 @@ const CameraComponent: React.FC = () => {
       {!location && !cameraAllowed && !error && <p style={{ backgroundColor: "#E5E5FF",
          padding:"20px 30px",
           margin:"0 auto",
-          borderRadius:"10px"
+          borderRadius:"10px",
+          color: "#7F4DFF"
          }}>
        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
@@ -157,22 +161,22 @@ const CameraComponent: React.FC = () => {
       {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center", }}>
          {photoTaken ? <>
-          <button onClick={startCamera} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#4CAF50", color: "white", cursor: "pointer" }}>
-           Kamerani ochish
+          <button onClick={startCamera} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+          <i className="fa-solid fa-camera-rotate"></i> Kameraga qaytish
         </button>
-        <button onClick={uploadToServer} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#4CAF50", color: "white", cursor: "pointer" }}>
-         Yuborish
+        <button disabled={!loading} onClick={uploadToServer} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor:loading ? "not-allowed" : "pointer" }}>
+        {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
         </button>
           </> : 
-        <button onClick={captureImage} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#4CAF50", color: "white", cursor: "pointer" }}>
-          Rasm olish
+        <button onClick={captureImage} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+        <i className="fa-solid fa-camera-retro"></i> Rasm olish
         </button> }
         </div>
       ): 
        <div>
         <button onClick={() => { startCamera(); getLocation();
        }} style={{ padding: "10px", borderRadius: "5px", marginTop:"50px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
-      Ruxsat berish
+       <i className="fa-solid fa-location-dot" style={{marginRight:"5px"}}></i>  Ruxsat berish <i className="fa-solid fa-camera-retro" style={{marginLeft:"5px"}}></i>
     </button>
        </div>
       }
