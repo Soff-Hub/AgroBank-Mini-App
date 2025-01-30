@@ -185,7 +185,7 @@ const CameraComponent: React.FC = () => {
         <button onClick={captureImage} style={{ padding: "12px 20px",  borderRadius: "10px",width:"100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
         <i className="fa-solid fa-camera-retro"></i> Rasm olish
         </button>
-        <button onClick={toggleCamera} style={{ padding: "12px 20px",  borderRadius: "10px",width:"100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+        <button onClick={toggleCamera} style={{ padding: "12px 20px",  borderRadius: "10px",width:"100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display:"flex", gap:"5px", justifyContent:"center", alignItems:"center", }}>
         <i className="fa-solid fa-camera-rotate"></i> <span style={{whiteSpace:"nowrap"}}>Kamerani almashtirish</span>
        </button>
           </>
