@@ -38,7 +38,6 @@ const CameraComponent: React.FC = () => {
       setCameraStream(stream);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        // videoRef.current.play();
         setCameraAllowed(true);
       }
     } catch (err) {
