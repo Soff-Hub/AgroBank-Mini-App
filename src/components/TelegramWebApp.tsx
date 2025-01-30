@@ -159,12 +159,12 @@ const CameraComponent: React.FC = () => {
       {user && <p>Salom, {user.first_name}!</p>}
 
       {photoHiddenButton ? (
-        <div style={{display:"flex", gap:"10px", justifyContent:"center", }}>
+        <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
          {photoTaken ? <>
-          <button onClick={startCamera} style={{ padding: "12px 20px",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+          <button onClick={startCamera} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
           <i className="fa-solid fa-camera-rotate"></i> Kameraga qaytish
         </button>
-        <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor:loading ? "not-allowed" : "pointer" }}>
+        <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width:"100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor:loading ? "not-allowed" : "pointer" }}>
         {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
         </button>
           </> : 
