@@ -115,7 +115,7 @@ const CameraComponent: React.FC = () => {
       formData.append("latitude", location?.latitude?.toString() || "");
       formData.append("longitude", location?.longitude?.toString() || "");
   
-      const response = await axios.post("https://bank.soffhu.uz/api/v1/common/blank/", formData, {
+      const response = await axios.post("https://bank.soffhub.uz/api/v1/common/blank/", formData, {
         headers: {
           "Content-Type": "multipart/form-data", 
         },
