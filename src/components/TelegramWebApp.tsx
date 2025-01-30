@@ -134,7 +134,7 @@ const CameraComponent: React.FC = () => {
   return (
     <div style={{
        textAlign: "center",
-       padding: "30px", 
+       padding: "20px", 
       maxWidth: "450px",
        margin: "0 auto",
        height:"75vh",
