@@ -161,7 +161,7 @@ const CameraComponent: React.FC = () => {
       {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
          {photoTaken ? <>
-          <button onClick={startCamera} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",display:"flex", gap:"5px", justifyContent:"center", cursor: "pointer" }}>
+          <button onClick={startCamera} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",display:"flex", gap:"5px", justifyContent:"center", alignItems:"center", cursor: "pointer" }}>
           <i className="fa-solid fa-camera-rotate"></i> <span style={{whiteSpace:"nowrap"}}>Kameraga qaytish</span>
         </button>
         <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width:"100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",  cursor:loading ? "not-allowed" : "pointer" }}>
