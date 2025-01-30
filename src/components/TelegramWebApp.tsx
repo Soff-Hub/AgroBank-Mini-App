@@ -109,7 +109,7 @@ const CameraComponent: React.FC = () => {
         throw new Error("Serverga yuborishda xatolik yuz berdi.");
       }
     } catch (err) {
-      setError("Serverga ulanishda xatolik yuz berdi.");
+      toast.error("Serverga ulanishda xatolik yuz berdi.");
     }
     setLoading(false)
   };
