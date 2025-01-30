@@ -150,7 +150,6 @@ const CameraComponent: React.FC = () => {
       }
     },[location])
 
- console.log(photoHiddenButton);
        
 
   return (
