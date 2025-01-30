@@ -37,6 +37,7 @@ const CameraComponent: React.FC = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setCameraAllowed(true);
+        localStorage.setItem("hiddenButton", "true")
       }
     } catch (err) {
       setError("Kamerani yoqishda xatolik. Iltimos, ruxsat bering.");
@@ -44,12 +45,8 @@ const CameraComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (photoHiddenButton) {
-      startCamera(useFrontCamera ? "user" : "environment");
-    }
+    startCamera(useFrontCamera ? "user" : "environment");
   }, [useFrontCamera]);
-
-   
   
   const toggleCamera = () => {
     setUseFrontCamera(prev => !prev);
@@ -89,6 +86,7 @@ const CameraComponent: React.FC = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
+        localStorage?.setItem("hiddenButton","true")
       },
       () => {
         setError("Joylashuvni olishda xatolik. Ruxsat bering.");
@@ -129,13 +127,6 @@ const CameraComponent: React.FC = () => {
   
       if (response.status === 201) {
         toast.success("Rasm va joylashuv muvaffaqiyatli yuborildi!");
-
-        if ((window as any).Telegram?.WebApp) {
-          setTimeout(() => {
-            (window as any).Telegram.WebApp.close();
-          }, 2000);
-        }
-
       } else {
         throw new Error("Serverga yuborishda xatolik yuz berdi.");
       }
@@ -148,7 +139,6 @@ const CameraComponent: React.FC = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const tg = (window as any).Telegram?.WebApp;
-      tg?.ready();
       tg?.expand();
       if (tg?.initDataUnsafe?.user) {
         setUser(tg.initDataUnsafe?.user);
@@ -156,14 +146,13 @@ const CameraComponent: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (location && cameraAllowed) {
-      setPhotoHiddenButton(true);
-    } else {
-      setPhotoHiddenButton(false);
-    }
-  }, [location, cameraAllowed]);
-    
+    useEffect(()=>{
+      if (Boolean(location?.latitude) && cameraAllowed) {
+        setPhotoHiddenButton(true)
+      }
+    },[location , cameraAllowed])
+
+     console.log(localStorage?.getItem("hiddenButton"));
      
 
   return (
