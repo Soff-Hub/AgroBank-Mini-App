@@ -125,6 +125,13 @@ const CameraComponent: React.FC = () => {
   
       if (response.status === 201) {
         toast.success("Rasm va joylashuv muvaffaqiyatli yuborildi!");
+
+        if ((window as any).Telegram?.WebApp) {
+          setTimeout(() => {
+            (window as any).Telegram.WebApp.close();
+          }, 2000);
+        }
+
       } else {
         throw new Error("Serverga yuborishda xatolik yuz berdi.");
       }
@@ -145,11 +152,11 @@ const CameraComponent: React.FC = () => {
   }, []);
 
     useEffect(()=>{
-      if (Boolean(location?.latitude) && cameraAllowed) {
-        setPhotoHiddenButton(true)
-      }
+      getLocation()
+      setPhotoHiddenButton(!!location && cameraAllowed);
     },[location , cameraAllowed])
 
+     
      
 
   return (
@@ -177,9 +184,7 @@ const CameraComponent: React.FC = () => {
          }}>
        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
-      {user && <p>Salom, #{user.id} {user.first_name}!</p>}
-
-      {photoHiddenButton ? (
+      {(photoHiddenButton) ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
          {photoTaken ? <>
           <button onClick={()=>startCamera("user")} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",display:"flex", gap:"5px", justifyContent:"center", alignItems:"center", cursor: "pointer" }}>
