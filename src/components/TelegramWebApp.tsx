@@ -115,6 +115,7 @@ const CameraComponent: React.FC = () => {
       formData.append("photo", blob, "image.png"); 
       formData.append("latitude", location?.latitude?.toString() || "");
       formData.append("longitude", location?.longitude?.toString() || "");
+      formData.append("telegram_id", user?.id);
   
       const response = await axios.post("https://bank.soffhub.uz/api/v1/common/blank/", formData, {
         headers: {
@@ -138,10 +139,7 @@ const CameraComponent: React.FC = () => {
       const tg = (window as any).Telegram?.WebApp;
       tg?.expand();
       if (tg?.initDataUnsafe?.user) {
-
-         console.log(tg?.initDataUnsafe);
-         
-        setUser(tg.initDataUnsafe.user);
+        setUser(tg.initDataUnsafe?.user);
       }
     }
   }, []);
@@ -152,7 +150,6 @@ const CameraComponent: React.FC = () => {
       }
     },[location , cameraAllowed])
 
-     console.log(user);
      
 
   return (
@@ -180,7 +177,7 @@ const CameraComponent: React.FC = () => {
          }}>
        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
-      {user && <p>Salom, {user.first_name}!</p>}
+      {user && <p>Salom, #{user.id} {user.first_name}!</p>}
 
       {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
