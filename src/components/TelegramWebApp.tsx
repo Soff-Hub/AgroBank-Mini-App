@@ -40,6 +40,11 @@ const CameraComponent: React.FC = () => {
     }
   };
 
+  const toggleCamera = () => {
+    setUseFrontCamera((prev) => !prev);
+    startCamera(); 
+  };
+
   const stopCamera = () => {
     if (videoRef.current?.srcObject) {
       (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
@@ -176,9 +181,15 @@ const CameraComponent: React.FC = () => {
         {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
         </button>
           </> : 
+          <>
         <button onClick={captureImage} style={{ padding: "12px 20px",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
         <i className="fa-solid fa-camera-retro"></i> Rasm olish
-        </button> }
+        </button>
+        <button onClick={toggleCamera} style={{ padding: "12px 20px",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+         Kamerani almashtirish
+       </button>
+          </>
+         }
         </div>
       ): 
        <div>
