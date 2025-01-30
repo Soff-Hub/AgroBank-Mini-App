@@ -16,16 +16,24 @@ const CameraComponent: React.FC = () => {
   const [photoTaken, setPhotoTaken] = useState(false);
   const [photoHiddenButton, setPhotoHiddenButton] = useState(false);
   const [loading, setLoading]=useState(false);
+  const [useFrontCamera, setUseFrontCamera] = useState(true);
 
   const startCamera = async () => {
     setPhotoTaken(false)
     try {
       setError(null);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const constraints = {
+        video: {
+          facingMode: useFrontCamera ? "user" : "environment", 
+        },
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
         setCameraAllowed(true);
+        setUseFrontCamera(true);
       }
     } catch (err) {
       setError("Kamerani yoqishda xatolik. Iltimos, ruxsat bering.");
