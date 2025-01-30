@@ -161,21 +161,21 @@ const CameraComponent: React.FC = () => {
       {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center", }}>
          {photoTaken ? <>
-          <button onClick={startCamera} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+          <button onClick={startCamera} style={{ padding: "12px 20px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
           <i className="fa-solid fa-camera-rotate"></i> Kameraga qaytish
         </button>
-        <button disabled={!loading} onClick={uploadToServer} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor:loading ? "not-allowed" : "pointer" }}>
+        <button disabled={!loading} onClick={uploadToServer} style={{ padding: "12px 20px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor:loading ? "not-allowed" : "pointer" }}>
         {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
         </button>
           </> : 
-        <button onClick={captureImage} style={{ padding: "10px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+        <button onClick={captureImage} style={{ padding: "12px 20px",  borderRadius: "5px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
         <i className="fa-solid fa-camera-retro"></i> Rasm olish
         </button> }
         </div>
       ): 
        <div>
         <button onClick={() => { startCamera(); getLocation();
-       }} style={{ padding: "10px", borderRadius: "5px", marginTop:"50px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+       }} style={{ padding: "12px 20px", borderRadius: "5px", marginTop:"50px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
        <i className="fa-solid fa-location-dot" style={{marginRight:"5px"}}></i>  Ruxsat berish <i className="fa-solid fa-camera-retro" style={{marginLeft:"5px"}}></i>
     </button>
        </div>
