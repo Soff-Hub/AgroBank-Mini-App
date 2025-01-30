@@ -148,6 +148,7 @@ const CameraComponent: React.FC = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const tg = (window as any).Telegram?.WebApp;
+      tg?.ready();
       tg?.expand();
       if (tg?.initDataUnsafe?.user) {
         setUser(tg.initDataUnsafe?.user);
