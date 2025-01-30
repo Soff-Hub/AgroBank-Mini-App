@@ -19,7 +19,7 @@ const CameraComponent: React.FC = () => {
   const [useFrontCamera, setUseFrontCamera] = useState(true);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
 
-  const startCamera = async () => {
+  const startCamera = async (facingMode?: "user" | "environment") => {
     setPhotoTaken(false)
     try {
       setError(null);
@@ -29,11 +29,9 @@ const CameraComponent: React.FC = () => {
       }
 
       const constraints = {
-        video: {
-          facingMode: useFrontCamera ? "user" : "environment", 
-        },
-      }
-
+        video: { facingMode },
+      };
+  
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setCameraStream(stream);
       if (videoRef.current) {
@@ -46,11 +44,14 @@ const CameraComponent: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    startCamera(useFrontCamera ? "user" : "environment");
+  }, [useFrontCamera]);
+  
   const toggleCamera = () => {
-    setUseFrontCamera((prev) => !prev);
-    startCamera(); 
+    setUseFrontCamera(prev => !prev);
   };
-
+  
   const stopCamera = () => {
     if (videoRef.current?.srcObject) {
       (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
@@ -115,8 +116,9 @@ const CameraComponent: React.FC = () => {
       formData.append("photo", blob, "image.png"); 
       formData.append("latitude", location?.latitude?.toString() || "");
       formData.append("longitude", location?.longitude?.toString() || "");
+      formData.append("telegram_id", user?.id);
   
-      const response = await axios.post("https://bank.soffhu.uz/api/v1/common/blank/", formData, {
+      const response = await axios.post("https://bank.soffhub.uz/api/v1/common/blank/", formData, {
         headers: {
           "Content-Type": "multipart/form-data", 
         },
@@ -138,7 +140,7 @@ const CameraComponent: React.FC = () => {
       const tg = (window as any).Telegram?.WebApp;
       tg?.expand();
       if (tg?.initDataUnsafe?.user) {
-        setUser(tg.initDataUnsafe.user);
+        setUser(tg.initDataUnsafe?.user);
       }
     }
   }, []);
@@ -149,6 +151,7 @@ const CameraComponent: React.FC = () => {
       }
     },[location , cameraAllowed])
 
+     
 
   return (
     <div style={{
@@ -175,12 +178,11 @@ const CameraComponent: React.FC = () => {
          }}>
        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
-      {user && <p>Salom, {user.first_name}!</p>}
 
       {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
          {photoTaken ? <>
-          <button onClick={startCamera} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",display:"flex", gap:"5px", justifyContent:"center", alignItems:"center", cursor: "pointer" }}>
+          <button onClick={()=>startCamera("user")} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",display:"flex", gap:"5px", justifyContent:"center", alignItems:"center", cursor: "pointer" }}>
           <i className="fa-solid fa-camera-rotate"></i> <span style={{whiteSpace:"nowrap"}}>Kameraga qaytish</span>
         </button>
         <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width:"100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",  cursor:loading ? "not-allowed" : "pointer" }}>
