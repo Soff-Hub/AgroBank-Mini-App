@@ -191,7 +191,6 @@ const CameraComponent: React.FC = () => {
          }}>
        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
-      {user && <p>Salom, #{user.id} {user.first_name}!</p>}
 
       {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
