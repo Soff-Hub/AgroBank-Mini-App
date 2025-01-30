@@ -46,6 +46,8 @@ const CameraComponent: React.FC = () => {
   useEffect(() => {
     startCamera(useFrontCamera ? "user" : "environment");
   }, [useFrontCamera]);
+
+   
   
   const toggleCamera = () => {
     setUseFrontCamera(prev => !prev);
@@ -151,12 +153,14 @@ const CameraComponent: React.FC = () => {
     }
   }, []);
 
-    useEffect(()=>{
-      getLocation()
-      setPhotoHiddenButton(!!location && cameraAllowed);
-    },[location , cameraAllowed])
-
-     
+  useEffect(() => {
+    if (location && cameraAllowed) {
+      setPhotoHiddenButton(true);
+    } else {
+      setPhotoHiddenButton(false);
+    }
+  }, [location, cameraAllowed]);
+    
      
 
   return (
@@ -184,7 +188,9 @@ const CameraComponent: React.FC = () => {
          }}>
        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
-      {(photoHiddenButton) ? (
+      {user && <p>Salom, #{user.id} {user.first_name}!</p>}
+
+      {photoHiddenButton ? (
         <div style={{display:"flex", gap:"10px", justifyContent:"center",width:"100%" }}>
          {photoTaken ? <>
           <button onClick={()=>startCamera("user")} style={{ padding: "12px 20px",width:"100%",  borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF",display:"flex", gap:"5px", justifyContent:"center", alignItems:"center", cursor: "pointer" }}>
