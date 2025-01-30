@@ -51,7 +51,6 @@ const CameraComponent: React.FC = () => {
     setUseFrontCamera(prev => !prev);
   };
   
-
   const stopCamera = () => {
     if (videoRef.current?.srcObject) {
       (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
@@ -139,6 +138,9 @@ const CameraComponent: React.FC = () => {
       const tg = (window as any).Telegram?.WebApp;
       tg?.expand();
       if (tg?.initDataUnsafe?.user) {
+
+         console.log(tg?.initDataUnsafe);
+         
         setUser(tg.initDataUnsafe.user);
       }
     }
@@ -150,6 +152,8 @@ const CameraComponent: React.FC = () => {
       }
     },[location , cameraAllowed])
 
+     console.log(user);
+     
 
   return (
     <div style={{
