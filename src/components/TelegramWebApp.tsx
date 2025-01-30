@@ -43,10 +43,6 @@ const CameraComponent: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    startCamera(useFrontCamera ? "user" : "environment");
-  }, [useFrontCamera]);
-
    
   
   const toggleCamera = () => {
@@ -212,7 +208,7 @@ const CameraComponent: React.FC = () => {
         </div>
       ): 
        <div>
-        <button onClick={() => { startCamera(); getLocation();
+        <button onClick={() => { startCamera(useFrontCamera ? "user" : "environment"); getLocation();
        }} style={{ padding: "12px 20px", borderRadius: "10px", marginTop:"50px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
        <i className="fa-solid fa-location-dot" style={{marginRight:"5px"}}></i>  Ruxsat berish <i className="fa-solid fa-camera-retro" style={{marginLeft:"5px"}}></i>
     </button>
