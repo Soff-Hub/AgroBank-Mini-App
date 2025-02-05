@@ -26,6 +26,10 @@ const CameraComponent: React.FC = () => {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
       }
+      const tg = (window as any).Telegram?.WebApp;
+      if (tg?.requestCameraAccess) {
+        await tg.requestCameraAccess();
+      }
 
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       setCameraStream(stream);
@@ -66,20 +70,40 @@ const CameraComponent: React.FC = () => {
       setError("Brauzerda geolokatsiya qo'llab-quvvatlanmaydi.");
       return;
     }
-    setLocationAllowed(false);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        setLocationAllowed(true);
-      },
-      () => {
-        setError("Joylashuvni olishda xatolik. Ruxsat bering.");
+
+    navigator.permissions.query({ name: "geolocation" }).then((result) => {
+      if (result.state === "granted") {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+            setLocationAllowed(true);
+          },
+          (error) => {
+            setError("Joylashuvni olishda xatolik yuz berdi.");
+          }
+        );
+      } else if (result.state === "prompt") {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+            setLocationAllowed(true);
+          },
+          (error) => {
+            setError("Joylashuvga ruxsat berilmagan.");
+          }
+        );
+      } else {
+        setError("Foydalanuvchi joylashuvga ruxsat bermadi.");
       }
-    );
+    });
   };
+
 
   const uploadToServer = async () => {
     if (!canvasRef.current || !location) {
@@ -126,10 +150,21 @@ const CameraComponent: React.FC = () => {
     setLoading(false)
   };
 
+  const requestTelegramLocation = () => {
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg?.requestLocation) {
+      tg.requestLocation();
+    } else {
+      getLocation();
+    }
+  };
+
   const onPermissionChange = () => {
     getLocation();
     startCamera();
+    requestTelegramLocation()
   }
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
