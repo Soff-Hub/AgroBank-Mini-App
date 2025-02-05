@@ -156,7 +156,7 @@ const CameraComponent: React.FC = () => {
 
     }}>
       <Toaster />
-      {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display: (videoAllowed ) ? "block" : "none", borderRadius: "10px" }}></video>}
+      {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display: (videoAllowed && !photoTaken ) ? "block" : "none", borderRadius: "10px" }}></video>}
 
       {<canvas ref={canvasRef} style={{ width: "100%", display: photoTaken ? "block" : "none", borderRadius: "10px" }}></canvas>}
 
