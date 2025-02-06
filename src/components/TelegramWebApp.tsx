@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from 'react-hot-toast';
-import { Breadcrumb, Input } from "antd";
-
+import { Breadcrumb, DatePicker, DatePickerProps, Input, InputNumber } from "antd";
+const { TextArea } = Input;
 
 const CameraComponent: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>({ id: "5593831038" });
   const [photoTaken, setPhotoTaken] = useState(false);
   const [loading, setLoading] = useState(false);
   const [locationAllowed, setLocationAllowed] = useState(false);
@@ -21,8 +21,13 @@ const CameraComponent: React.FC = () => {
   const [data, setData] = useState<any>([]);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [tabNumber, setTabNumber] = useState('');
-  const [statusID, setStatusID] = useState('');
-
+  const [statusID, setStatusID] = useState<any>('');
+  const [comment, setComment] = useState<any>('');
+  const [price, setPrice] = useState<any>('');
+  const [dateChange, setDateChane] = useState<any>('');
+  const [errors, setErrors] = useState<any>('');
+  const hi = window.location?.search
+  const token = hi?.split("?hi=")[1]
 
   async function getBrandCrums() {
     try {
@@ -108,6 +113,7 @@ const CameraComponent: React.FC = () => {
   };
 
 
+
   const uploadToServer = async () => {
 
     if (!canvasRef.current || !location) {
@@ -129,32 +135,57 @@ const CameraComponent: React.FC = () => {
       }
       const blob = new Blob([uintArray], { type: 'image/png' });
 
-      formData.append("photo", blob, "image.png");
-      formData.append("latitude", location?.latitude?.toString() || "");
-      formData.append("longitude", location?.longitude?.toString() || "");
-      formData.append("status", statusID);
-      formData.append("blank_id", tabNumber);
-      formData.append("telegram_id", user?.id);
+      if (blob) {
+        formData.append("photo", blob, "image.png");
+      }
+      if (location?.latitude) {
+        formData.append("latitude", location?.latitude?.toString());
+      }
+      if (location?.longitude) {
+        formData.append("longitude", location?.longitude?.toString());
+      }
+      if (statusID?.id) {
+        formData.append("status", statusID?.id);
+      }
+      if (tabNumber) {
+        formData.append("blank_id", tabNumber);
+      }
+      if (user?.id) {
+        formData.append("telegram_id", user?.id);
+      }
+      if (comment) {
+        formData.append("comment", comment);
+      }
+      if (price) {
+        formData.append("payment_amount", price);
+      }
+      if (dateChange) {
+        formData.append("payment_date", dateChange);
+      }
 
       const response = await axios.post("https://bank.soffhub.uz/api/v1/common/blank/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "hi": token,
         },
       });
-
       if (response.status === 201) {
-        toast.success("Rasm va joylashuv muvaffaqiyatli yuborildi!");
+        toast.success("Anketa muvaffaqiyatli to'ldirildi!");
         setLocationAllowed(false);
         setPhotoTaken(false);
         setVideoAllowed(false);
         setTabNumberContinues(false);
         setTabNumberContinues2(false);
         setTabNumber('');
+        setDataPathFilter(null);
+        setComment("");
+        setPrice("");
+        setDateChane("");
       } else {
         throw new Error("Serverga yuborishda xatolik yuz berdi.");
       }
-    } catch (err) {
-      toast.error("Serverga ulanishda xatolik yuz berdi.");
+    } catch (err: any) {
+      setErrors(err?.response?.data);
     }
     setLoading(false)
   };
@@ -163,17 +194,6 @@ const CameraComponent: React.FC = () => {
     getLocation();
     startCamera();
   }
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const tg = (window as any).Telegram?.WebApp;
-      tg?.expand();
-      if (tg?.initDataUnsafe?.user) {
-        setUser(tg.initDataUnsafe?.user);
-      }
-    }
-
-  }, []);
 
   const items = dataPath?.length > 0
     ? [
@@ -196,7 +216,22 @@ const CameraComponent: React.FC = () => {
     getBrandCrums();
   }, [dataPathFilter]);
 
+  const onChange: DatePickerProps['onChange'] = (date) => {
+    const formattedDate = date.format("YYYY-MM-DD");
+    setDateChane(formattedDate)
+  };
 
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const tg = (window as any).Telegram?.WebApp;
+      tg?.expand();
+      if (tg?.initDataUnsafe?.user) {
+        setUser(tg.initDataUnsafe?.user);
+      }
+    }
+
+  }, []);
 
   return (
     <>
@@ -222,18 +257,46 @@ const CameraComponent: React.FC = () => {
                   setDataPathFilter(item?.id);
                   setStatusID('');
                 } else {
-                  setStatusID(item?.id);
+                  setStatusID(item);
                 }
-              }} style={{ backgroundColor: statusID === item?.id ? "rgba(111, 120, 127, 0.1)" : "", cursor: "pointer", width: '100%', border: "1px solid rgba(0,0,0,0.1) ", padding: "10px 0", marginBottom: "5px", borderRadius: "8px", position: "relative" }}>
+              }} style={{ backgroundColor: statusID?.id === item?.id ? "rgba(111, 120, 127, 0.1)" : "", cursor: "pointer", width: '100%', border: "1px solid rgba(0,0,0,0.1) ", padding: "10px 0", marginBottom: "5px", borderRadius: "8px", position: "relative" }}>
                 {item?.name}
                 {item?.children && <span style={{ position: "absolute", top: "12px", right: "15px" }}><i className="fa-solid fa-chevron-down"></i></span>}
               </div>
             ))
           }
-          {statusID && <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: loading ? "not-allowed" : "pointer" }}>
-            {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
-          </button>}
+          {statusID?.id &&
+            <>
+              {statusID?.requirement !== "not_money_and_date" && <div style={{ width: "100%" }}>
+                <DatePicker onChange={onChange} onFocus={() => setErrors((prev: any) => ({ ...prev, payment_date: "" }))} value={dateChange} style={{ height: "39.5px", marginBottom: "5px", width: "100%" }} />
+                {errors?.payment_date && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_date}</p>}
+              </div>}
+
+              {(statusID?.requirement === "ten_day_in_month") && <div style={{ marginBottom: "10px" }}>
+                <InputNumber onFocus={() => setErrors((prev: any) => ({ ...prev, payment_amount: "" }))} type="number" placeholder="To'lov summasi" value={price} onChange={(e) => setPrice(e.target?.value)} style={{ height: "39.5px", marginBottom: "3px", width: "100%" }} />
+                {errors?.payment_amount && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_amount}</p>}
+
+              </div>}
+
+              <div style={{ marginBottom: "10px" }}>
+                <TextArea
+                  onFocus={() => setErrors((prev: any) => ({ ...prev, comment: "" }))}
+                  showCount
+
+                  onChange={(e) => setComment(e?.target?.value)}
+                  placeholder="Izoh 10 ta belgidan katta bo'lsin"
+                  style={{ height: 120, resize: 'none', marginBottom: "3px" }}
+                />
+                {errors?.comment && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.comment}</p>}
+              </div>
+
+              <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: loading ? "not-allowed" : "pointer" }}>
+                {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
+              </button>
+            </>
+          }
         </div>}
+
       {
         <div style={{
           textAlign: "center",
