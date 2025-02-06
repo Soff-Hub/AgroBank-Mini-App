@@ -1,9 +1,7 @@
-// Rasm va joylashuvni serverga yuborish
-
-
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from 'react-hot-toast';
+import { Breadcrumb, Input } from "antd";
 
 
 const CameraComponent: React.FC = () => {
@@ -16,7 +14,35 @@ const CameraComponent: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [videoAllowed, setVideoAllowed] = useState(false);
+  const [tabNumberContinues, setTabNumberContinues] = useState(false);
+  const [tabNumberContinues2, setTabNumberContinues2] = useState(false);
+  const [dataPath, setDataPath] = useState([]);
+  const [dataPathFilter, setDataPathFilter] = useState(null);
+  const [data, setData] = useState<any>([]);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [tabNumber, setTabNumber] = useState('');
+  const [statusID, setStatusID] = useState('');
+
+
+  async function getBrandCrums() {
+    try {
+      const response = await axios.get(`https://bank.soffhub.uz/api/v1/common/blank/status/path/?parent=${dataPathFilter || ""}`)
+      setDataPath(response?.data)
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
+  async function getStatusData() {
+    try {
+      const response = await axios.get(`https://bank.soffhub.uz/api/v1/common/blank/status/?parent=${dataPathFilter || ''}`)
+      setData(response?.data)
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
 
   const startCamera = async () => {
     try {
@@ -81,9 +107,11 @@ const CameraComponent: React.FC = () => {
     );
   };
 
+
   const uploadToServer = async () => {
+
     if (!canvasRef.current || !location) {
-      setError("Rasm yoki joylashuv mavjud emas.");
+      toast.error("Rasm yoki joylashuv mavjud emas.");
       return;
     }
     setLoading(true)
@@ -104,6 +132,8 @@ const CameraComponent: React.FC = () => {
       formData.append("photo", blob, "image.png");
       formData.append("latitude", location?.latitude?.toString() || "");
       formData.append("longitude", location?.longitude?.toString() || "");
+      formData.append("status", statusID);
+      formData.append("blank_id", tabNumber);
       formData.append("telegram_id", user?.id);
 
       const response = await axios.post("https://bank.soffhub.uz/api/v1/common/blank/", formData, {
@@ -117,6 +147,9 @@ const CameraComponent: React.FC = () => {
         setLocationAllowed(false);
         setPhotoTaken(false);
         setVideoAllowed(false);
+        setTabNumberContinues(false);
+        setTabNumberContinues2(false);
+        setTabNumber('');
       } else {
         throw new Error("Serverga yuborishda xatolik yuz berdi.");
       }
@@ -142,56 +175,112 @@ const CameraComponent: React.FC = () => {
 
   }, []);
 
+  const items = dataPath?.length > 0
+    ? [
+      {
+        title: <span style={{ cursor: "pointer" }}>Barchasi</span>,
+        onClick: () => setDataPathFilter(null),
+      },
+      ...dataPath.map((item: any) => ({
+        title: <span style={{ cursor: item?.id === dataPathFilter ? "" : "pointer", color: item?.id === dataPathFilter ? "blue" : "" }}>{item?.name}</span>,
+        onClick: () => {
+          setDataPathFilter(item?.id)
+        }
+      })),
+    ]
+    : [];
+
+
+  useEffect(() => {
+    getStatusData();
+    getBrandCrums();
+  }, [dataPathFilter]);
+
+
 
   return (
-    <div style={{
-      textAlign: "center",
-      padding: "20px",
-      maxWidth: "450px",
-      margin: "0 auto",
-      height: "75vh",
-      display: "grid",
-      placeContent: "center",
-      gap: "10px",
-
-    }}>
+    <>
       <Toaster />
-      {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display: (videoAllowed && !photoTaken ) ? "block" : "none", borderRadius: "10px" }}></video>}
+      {tabNumberContinues &&
+        <div style={{ width: "100%", }}>
+          <Input placeholder="Anketa ID" style={{ width: "100%", height: "39.5px", marginBottom: "10px" }} onChange={(e) => setTabNumber(e.target.value)} value={tabNumber} />
+          <button disabled={Boolean(!tabNumber)} onClick={() => { setTabNumberContinues2(true), setTabNumberContinues(false) }} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: Boolean(!tabNumber) ? "not-allowed" : "pointer" }}>
+            Davom etish <i className="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      }
+      {tabNumberContinues2 &&
+        <div style={{ width: "100%", textAlign: "center", display: "flex", flexDirection: "column", gap: "5px" }}>
+          <Breadcrumb
+            items={items}
+          />
+          <h3 style={{ margin: "10px" }}>Holatlar</h3>
+          {
+            data?.results?.map((item: any) => (
+              <div onClick={() => {
+                if (item?.children) {
+                  setDataPathFilter(item?.id);
+                  setStatusID('');
+                } else {
+                  setStatusID(item?.id);
+                }
+              }} style={{ backgroundColor: statusID === item?.id ? "rgba(111, 120, 127, 0.1)" : "", cursor: "pointer", width: '100%', border: "1px solid rgba(0,0,0,0.1) ", padding: "10px 0", marginBottom: "5px", borderRadius: "8px", position: "relative" }}>
+                {item?.name}
+                {item?.children && <span style={{ position: "absolute", top: "12px", right: "15px" }}><i className="fa-solid fa-chevron-down"></i></span>}
+              </div>
+            ))
+          }
+          {statusID && <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: loading ? "not-allowed" : "pointer" }}>
+            {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
+          </button>}
+        </div>}
+      {
+        <div style={{
+          textAlign: "center",
+          gap: "10px",
+          width: "100%",
+          display: (!tabNumberContinues2 && !tabNumberContinues) ? "grid" : "none"
 
-      {<canvas ref={canvasRef} style={{ width: "100%", display: photoTaken ? "block" : "none", borderRadius: "10px" }}></canvas>}
+        }}>
+          {<video ref={videoRef} autoPlay playsInline style={{ width: "100%", display: (videoAllowed && !photoTaken) ? "block" : "none", borderRadius: "10px" }}></video>}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {(!locationAllowed && !videoAllowed) && <p style={{
-        backgroundColor: "#E5E5FF",
-        padding: "20px 30px",
-        margin: "0 auto",
-        borderRadius: "10px",
-        color: "#7F4DFF"
-      }}>
-        Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
+          {<canvas ref={canvasRef} style={{ width: "100%", display: photoTaken ? "block" : "none", borderRadius: "10px" }}></canvas>}
+
+          {error && <p style={{ color: "red", }}>{error}</p>}
+          {(!locationAllowed && !videoAllowed) && <p style={{
+            backgroundColor: "#E5E5FF",
+            padding: "20px 0",
+            margin: "0 auto",
+            borderRadius: "10px",
+            color: "#7F4DFF",
+            width: "100%"
+          }}>
+            Joylashuv ma'lumotlarini berishga rozimisiz?</p>}
 
 
-      {(locationAllowed && videoAllowed) ? (
-        <div style={{ display: "flex", gap: "10px", justifyContent: "center", width: "100%" }}>
-          {photoTaken ? <>
-            <button onClick={() => startCamera()} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", cursor: "pointer" }}>
-              <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Kameraga qaytish</span>
-            </button>
-            <button disabled={loading} onClick={uploadToServer} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: loading ? "not-allowed" : "pointer" }}>
-              {loading && <i className="fa-solid fa-spinner"></i>} Yuborish <i className="fa-solid fa-paper-plane"></i>
-            </button>
-          </> :
-            <button onClick={captureImage} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
-              <i className="fa-solid fa-camera-retro"></i> Rasm olish
+          {(locationAllowed && videoAllowed) ? (
+            <div style={{ display: "flex", gap: "10px", justifyContent: "center", width: "100%" }}>
+              {photoTaken ? <>
+                <button onClick={() => startCamera()} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", cursor: "pointer" }}>
+                  <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Kameraga qaytish</span>
+                </button>
+                <button onClick={() => setTabNumberContinues(true)} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+                  {!!tabNumber && <i className="fa-solid fa-spinner"></i>} Davom etish <i className="fa-solid fa-arrow-right"></i>
+                </button>
+              </> :
+                <button onClick={captureImage} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+                  <i className="fa-solid fa-camera-retro"></i> Rasm olish
+                </button>
+              }
+            </div>
+          ) :
+            <button onClick={onPermissionChange} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", }}>
+              <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Ruxsat berish</span>
             </button>
           }
         </div>
-      ) :
-        <button onClick={onPermissionChange} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", }}>
-          <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Ruxsat berish</span>
-        </button>
       }
-    </div>
+    </>
   );
 };
 
