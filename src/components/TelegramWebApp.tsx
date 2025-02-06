@@ -28,7 +28,7 @@ const CameraComponent: React.FC = () => {
   const [dateChange, setDateChane] = useState<any>('');
   const [errors, setErrors] = useState<any>('');
   const hi = window.location?.pathname
-  const token = hi?.split("/")[1]
+  const token = hi?.split("?hi=")[1]
 
   async function getBrandCrums() {
     try {
