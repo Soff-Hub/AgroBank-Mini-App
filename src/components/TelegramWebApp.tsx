@@ -268,7 +268,7 @@ const CameraComponent: React.FC = () => {
           {statusID?.id &&
             <>
               {statusID?.requirement !== "not_money_and_date" && <div style={{ width: "100%" }}>
-                <DatePicker onChange={onChange} onFocus={() => setErrors((prev: any) => ({ ...prev, payment_date: "" }))} value={dateChange} style={{ height: "39.5px", marginBottom: "5px", width: "100%" }} />
+                <DatePicker onChange={onChange} onFocus={() => setErrors((prev: any) => ({ ...prev, payment_date: "" }))} style={{ height: "39.5px", marginBottom: "5px", width: "100%" }} />
                 {errors?.payment_date && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_date}</p>}
               </div>}
 
@@ -327,7 +327,7 @@ const CameraComponent: React.FC = () => {
                 <button onClick={() => startCamera()} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", cursor: "pointer" }}>
                   <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Kameraga qaytish</span>
                 </button>
-                <button onClick={() => setTabNumberContinues(true)} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+                <button onClick={() => {setTabNumberContinues(true), stopCamera()}} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
                   {!!tabNumber && <i className="fa-solid fa-spinner"></i>} Davom etish <i className="fa-solid fa-arrow-right"></i>
                 </button>
               </> :
