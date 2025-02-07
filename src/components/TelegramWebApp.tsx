@@ -347,7 +347,7 @@ const CameraComponent: React.FC = () => {
                           {errors?.payment_date && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_date}</p>}
                         </div>}
 
-                        {(statusID?.requirement && statusID?.requirement === "ten_day_in_month" && statusID?.requirement === "in_one_month") && <div style={{ marginBottom: "10px" }}>
+                        {(statusID?.requirement && (statusID?.requirement === "ten_day_in_month" || statusID?.requirement === "in_one_month")) && <div style={{ marginBottom: "10px" }}>
                           <InputNumber onFocus={() => setErrors((prev: any) => ({ ...prev, payment_amount: "" }))} type="number" placeholder="To'lov summasi" value={price} onChange={(e) => setPrice(e)} style={{ height: "39.5px", marginBottom: "3px", width: "100%" }} />
                           {errors?.payment_amount && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_amount}</p>}
 
