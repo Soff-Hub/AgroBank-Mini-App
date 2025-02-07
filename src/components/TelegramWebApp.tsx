@@ -283,6 +283,9 @@ const CameraComponent: React.FC = () => {
 
   return (
     <>
+    {JSON.stringify(location)}
+    {JSON.stringify(videoAllowed)}
+    
       {successText ?
         <>
           <div style={{
