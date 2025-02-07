@@ -21,7 +21,7 @@ const CameraComponent: React.FC = () => {
   const [dataPathFilter, setDataPathFilter] = useState(null);
   const [data, setData] = useState<any>([]);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
-  const [tabNumber, setTabNumber] = useState('');
+  const [tabNumber, setTabNumber] = useState<any>(null);
   const [statusID, setStatusID] = useState<any>('');
   const [comment, setComment] = useState<any>('');
   const [price, setPrice] = useState<any>('');
@@ -313,7 +313,7 @@ const CameraComponent: React.FC = () => {
                 <Toaster />
                 {tabNumberContinues &&
                   <div style={{ width: "100%", }}>
-                    <Input placeholder="Anketa ID" style={{ width: "100%", height: "39.5px", marginBottom: "10px" }} onChange={(e) => setTabNumber(e.target.value)} value={tabNumber} />
+                    <InputNumber placeholder="Anketa ID" type="number" style={{ width: "100%", height: "39.5px", marginBottom: "10px" }} onChange={(e) => setTabNumber(e)} value={tabNumber} />
                     <button disabled={Boolean(!tabNumber)} onClick={() => { setTabNumberContinues2(true), setTabNumberContinues(false) }} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: Boolean(!tabNumber) ? "not-allowed" : "pointer" }}>
                       Davom etish <i className="fa-solid fa-arrow-right"></i>
                     </button>
@@ -347,7 +347,7 @@ const CameraComponent: React.FC = () => {
                           {errors?.payment_date && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_date}</p>}
                         </div>}
 
-                        {(statusID?.requirement && statusID?.requirement === "ten_day_in_month") && <div style={{ marginBottom: "10px" }}>
+                        {(statusID?.requirement && statusID?.requirement === "ten_day_in_month" && statusID?.requirement === "in_one_month") && <div style={{ marginBottom: "10px" }}>
                           <InputNumber onFocus={() => setErrors((prev: any) => ({ ...prev, payment_amount: "" }))} type="number" placeholder="To'lov summasi" value={price} onChange={(e) => setPrice(e)} style={{ height: "39.5px", marginBottom: "3px", width: "100%" }} />
                           {errors?.payment_amount && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_amount}</p>}
 
