@@ -260,15 +260,7 @@ const CameraComponent: React.FC = () => {
   useEffect(() => {
     startCamera(toggle ? "user" : "environment");
     getLocation();
-  }, [toggle]);
-
-
-  useEffect(() => {
-    if (loadPermes === 200) {
-      startCamera();
-    }
-  }, [loadPermes]);
-
+  }, [toggle,loadPermes]);
 
 
 
