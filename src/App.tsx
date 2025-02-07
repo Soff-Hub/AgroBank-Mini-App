@@ -7,12 +7,13 @@ function App() {
       textAlign: "center",
       padding: "20px",
       maxWidth: "450px",
-      width: "100%",
+      width: "90%",
       margin: "0 auto",
-      height: "75vh",
+      minHeight: "75vh",
       display: "flex",
       alignItems: "center",
       gap: "10px",
+      justifyContent: "center",
 
     }}>
       <TelegramWebApp />
