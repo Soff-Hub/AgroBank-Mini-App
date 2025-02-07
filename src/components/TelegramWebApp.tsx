@@ -37,7 +37,6 @@ const CameraComponent: React.FC = () => {
 
   useEffect(() => {
     startCamera(toggle ? "user" : "environment");
-    getLocation();
   }, [toggle]);
 
   async function getBrandCrums() {
