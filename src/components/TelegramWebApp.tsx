@@ -202,11 +202,6 @@ const CameraComponent: React.FC = () => {
     setLoading(false)
   };
 
-  const onPermissionChange = () => {
-    getLocation();
-    startCamera();
-  }
-
   const items = dataPath?.length > 0
     ? [
       {
@@ -222,10 +217,6 @@ const CameraComponent: React.FC = () => {
     ]
     : [];
 
-
-  useEffect(() => {
-    startCamera(toggle ? "user" : "environment");
-  }, [toggle]);
 
 
   useEffect(() => {
@@ -267,10 +258,13 @@ const CameraComponent: React.FC = () => {
         setUser(tg.initDataUnsafe?.user);
       }
     }
-    setLocationAllowed(false);
-    setVideoAllowed(false);
-
   }, []);
+
+  useEffect(() => {
+    startCamera(toggle ? "user" : "environment");
+    getLocation();
+  }, [toggle]);
+
 
 
   return (
@@ -314,7 +308,15 @@ const CameraComponent: React.FC = () => {
                 <Toaster />
                 {tabNumberContinues &&
                   <div style={{ width: "100%", }}>
-                    <InputNumber placeholder="Anketa ID" type="number" style={{ width: "100%", height: "39.5px", marginBottom: "10px" }} onChange={(e) => setTabNumber(e)} value={tabNumber} />
+                    <InputNumber
+                      placeholder="Anketa ID"
+                      style={{ width: "100%", height: "39.5px", marginBottom: "10px" }}
+                      onChange={(value) => setTabNumber(value)}
+                      value={tabNumber}
+                      min={0}
+                      formatter={(value) => (value ? String(value).replace(/\D/g, "") : "")}
+                      parser={(value) => value?.replace(/\D/g, "")}
+                    />
                     <button disabled={Boolean(!tabNumber)} onClick={() => { setTabNumberContinues2(true), setTabNumberContinues(false) }} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: Boolean(!tabNumber) ? "not-allowed" : "pointer" }}>
                       Davom etish <i className="fa-solid fa-arrow-right"></i>
                     </button>
@@ -419,10 +421,10 @@ const CameraComponent: React.FC = () => {
                           </div>
                         }
                       </div>
-                    ) :
-                      <button onClick={onPermissionChange} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", }}>
-                        <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Ruxsat berish</span>
-                      </button>
+                    ) : null
+                      // <button onClick={onPermissionChange} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", }}>
+                      //   <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Ruxsat berish</span>
+                      // </button>
                     }
                   </div>
                 }
