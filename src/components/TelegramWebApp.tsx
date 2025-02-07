@@ -31,7 +31,8 @@ const CameraComponent: React.FC = () => {
   const hi = window.location?.search
   const token = hi?.split("?hi=")[1]
   const [toggle, setToggle] = useState<"user" | "environment">("user");
-  const [successText, setSuccessText] = useState("")
+  const [successText, setSuccessText] = useState("");
+  const isFirstRender = useRef(true);
 
 
   async function getBrandCrums() {
@@ -54,7 +55,7 @@ const CameraComponent: React.FC = () => {
     }
   }
 
-  const startCamera = async (toggleMode: "user" | "environment") => {
+  const startCamera = async () => {
     try {
       setPhotoTaken(false);
       setVideoAllowed(false);
@@ -63,7 +64,7 @@ const CameraComponent: React.FC = () => {
         cameraStream.getTracks().forEach(track => track.stop());
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: toggleMode } });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: toggle } });
       setCameraStream(stream);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -198,7 +199,7 @@ const CameraComponent: React.FC = () => {
 
   const onPermissionChange = () => {
     getLocation();
-    startCamera("user");
+    startCamera();
   }
 
   const items = dataPath?.length > 0
@@ -257,6 +258,14 @@ const CameraComponent: React.FC = () => {
     }
 
   }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      startCamera()
+      return;
+    }
+  }, [toggle])
 
 
 
@@ -388,7 +397,7 @@ const CameraComponent: React.FC = () => {
                     {(locationAllowed && videoAllowed) ? (
                       <div style={{ display: "flex", gap: "10px", justifyContent: "center", width: "100%" }}>
                         {photoTaken ? <>
-                          <button onClick={() => startCamera("user")} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", cursor: "pointer" }}>
+                          <button onClick={() => startCamera()} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", cursor: "pointer" }}>
                             <i className="fa-solid fa-camera-rotate"></i> <span style={{ whiteSpace: "nowrap" }}>Kameraga qaytish</span>
                           </button>
                           <button onClick={() => { setTabNumberContinues(true), stopCamera() }} style={{ padding: "12px 20px", width: "100%", borderRadius: "10px", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
@@ -400,11 +409,8 @@ const CameraComponent: React.FC = () => {
                               <i className="fa-solid fa-camera-retro"></i> Rasm olish
                             </button>
                             <button onClick={() => {
-                              setToggle(prev => {
-                                const newToggle = prev === "user" ? "environment" : "user";
-                                startCamera(newToggle);
-                                return newToggle;
-                              });
+                              setToggle(toggle === "user" ? "environment" : "user");
+                              startCamera();
                             }}
 
                               style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", justifyContent: "center", gap: "5px" }}>
