@@ -32,7 +32,7 @@ const CameraComponent: React.FC = () => {
   const token = hi?.split("?hi=")[1]
   const [toggle, setToggle] = useState<"user" | "environment">("user");
   const [successText, setSuccessText] = useState("");
-  const isFirstRender = useRef(true);
+  
 
 
   async function getBrandCrums() {
@@ -260,11 +260,7 @@ const CameraComponent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      startCamera()
-      return;
-    }
+    startCamera()
   }, [toggle])
 
 
