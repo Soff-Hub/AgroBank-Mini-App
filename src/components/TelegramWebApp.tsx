@@ -271,16 +271,6 @@ const CameraComponent: React.FC = () => {
 
   }, []);
 
-  console.log("location", location);
-  console.log("locationAllowed", location);
-  console.log("viodeAllowed", videoAllowed);
-  console.log("error", error);
-
-  console.log("videoAllowed && !photoTaken", videoAllowed && !photoTaken);
-  console.log("photoTaken", photoTaken);
-
-
-
 
   return (
     <>
