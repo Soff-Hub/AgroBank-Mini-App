@@ -30,7 +30,7 @@ const CameraComponent: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<any>('');
   const hi = window.location?.search
   const token = hi?.split("?hi=")[1]
-
+  const [toggle, setToggle] = useState<"user" | "environment">("user");
 
 
   async function getBrandCrums() {
@@ -62,7 +62,7 @@ const CameraComponent: React.FC = () => {
         cameraStream.getTracks().forEach(track => track.stop());
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: toggle } });
       setCameraStream(stream);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -261,7 +261,7 @@ const CameraComponent: React.FC = () => {
 
   return (<>
     {
-      loadPermes === 200 ?
+      loadPermes !== 200 ?
         (<>
           <Toaster />
           {tabNumberContinues &&
@@ -296,7 +296,7 @@ const CameraComponent: React.FC = () => {
               {statusID?.id &&
                 <>
                   {(statusID?.requirement && statusID?.requirement !== "not_money_and_date") && <div style={{ width: "100%" }}>
-                    <DatePicker onChange={onChange} onFocus={() => setErrors((prev: any) => ({ ...prev, payment_date: "" }))} style={{ height: "39.5px", marginBottom: "5px", width: "100%" }} />
+                    <DatePicker placeholder=" Sana tanlash" onChange={onChange} onFocus={() => setErrors((prev: any) => ({ ...prev, payment_date: "" }))} style={{ height: "39.5px", marginBottom: "5px", width: "100%" }} />
                     {errors?.payment_date && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_date}</p>}
                   </div>}
 
@@ -359,9 +359,19 @@ const CameraComponent: React.FC = () => {
                       {!!tabNumber && <i className="fa-solid fa-spinner"></i>} Davom etish <i className="fa-solid fa-arrow-right"></i>
                     </button>
                   </> :
-                    <button onClick={captureImage} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
-                      <i className="fa-solid fa-camera-retro"></i> Rasm olish
-                    </button>
+                    <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "10px" }}>
+                      <button onClick={captureImage} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
+                        <i className="fa-solid fa-camera-retro"></i> Rasm olish
+                      </button>
+                      <button onClick={() => {
+                        setToggle(toggle === "user" ? "environment" : "user");
+                        startCamera();
+                      }}
+
+                        style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", justifyContent: "center", gap: "5px" }}>
+                        <i className="fa-solid fa-camera-retro"></i> <span style={{ whiteSpace: "nowrap" }}>Kamerani almashtirish</span>
+                      </button>
+                    </div>
                   }
                 </div>
               ) :
