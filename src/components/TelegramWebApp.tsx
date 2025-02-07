@@ -277,14 +277,8 @@ const CameraComponent: React.FC = () => {
   }, []);
 
 
-  console.log("location",location);
-  console.log("videoAllowed",videoAllowed);
-
-
   return (
     <>
-    {JSON.stringify(location)}
-    {JSON.stringify(videoAllowed)}
     
       {successText ?
         <>
