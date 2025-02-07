@@ -262,24 +262,19 @@ const CameraComponent: React.FC = () => {
     getLocation();
   }, [toggle]);
 
-  const checkPermissions = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ video: true });
-      setVideoAllowed(true);
-    } catch (error) {
-      setVideoAllowed(false);
-      setError("Kamerani yoqishda xatolik. Ruxsat bering.");
-    }
-  };
 
   useEffect(() => {
-    checkPermissions();
-  }, []);
+    if (loadPermes === 200) {
+      startCamera();
+    }
+  }, [loadPermes]);
+
+
 
 
   return (
     <>
-    
+
       {successText ?
         <>
           <div style={{
@@ -320,6 +315,7 @@ const CameraComponent: React.FC = () => {
                 {tabNumberContinues &&
                   <div style={{ width: "100%", }}>
                     <InputNumber
+                      type="number"
                       placeholder="Anketa ID"
                       style={{ width: "100%", height: "39.5px", marginBottom: "10px" }}
                       onChange={(value) => setTabNumber(value)}
