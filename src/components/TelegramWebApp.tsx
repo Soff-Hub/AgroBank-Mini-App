@@ -9,10 +9,10 @@ const CameraComponent: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [user, setUser] = useState<any>({ id: "5593831038" });
+  const [user, setUser] = useState<any>();
   const [photoTaken, setPhotoTaken] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadPermes, setLoadPermes] = useState(true);
+  const [loadPermes, setLoadPermes] = useState<any>(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [videoAllowed, setVideoAllowed] = useState(false);
   const [tabNumberContinues, setTabNumberContinues] = useState(false);
@@ -27,6 +27,7 @@ const CameraComponent: React.FC = () => {
   const [price, setPrice] = useState<any>('');
   const [dateChange, setDateChane] = useState<any>('');
   const [errors, setErrors] = useState<any>('');
+  const [errorMessage, setErrorMessage] = useState<any>('');
   const hi = window.location?.pathname
   const token = hi?.split("?hi=")[1]
 
@@ -230,9 +231,12 @@ const CameraComponent: React.FC = () => {
           "hi": token,
         },
       })
-      setLoadPermes(response?.data?.status)
-    } catch (error) {
-      console.log(error);
+      if (response?.status === 200) {
+        setLoadPermes(200)
+      }
+    } catch (error: any) {
+      setLoadPermes(error?.status)
+      setErrorMessage(error?.response?.data?.msg)
 
     }
   }
@@ -253,7 +257,7 @@ const CameraComponent: React.FC = () => {
 
   return (<>
     {
-      loadPermes ?
+      loadPermes === 200 ?
         (<>
           <Toaster />
           {tabNumberContinues &&
@@ -379,7 +383,7 @@ const CameraComponent: React.FC = () => {
               borderRadius: "10px",
               color: "#7F4DFF",
               width: "100%"
-            }}> Telegram bot orqali qayta start bosing!</p>
+            }}> {errorMessage}</p>
           </div>
         </>
     }
