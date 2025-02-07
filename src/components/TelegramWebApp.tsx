@@ -5,6 +5,7 @@ type Props = {}
 function TelegramWebApp({ }: Props) {
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState("Yuklanmoqda");
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   const getLocation = () => {
@@ -13,6 +14,7 @@ function TelegramWebApp({ }: Props) {
       return;
     }
     setLocationAllowed(false);
+    setLoading("Yuklanmoqda");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocation({
@@ -20,6 +22,7 @@ function TelegramWebApp({ }: Props) {
           longitude: position.coords.longitude,
         });
         setLocationAllowed(true);
+        setLoading("Success")
       },
       () => {
         setError("Joylashuvni olishda xatolik. Ruxsat bering.");
@@ -34,6 +37,7 @@ function TelegramWebApp({ }: Props) {
   return (
     <div>
       {JSON.stringify(location)}
+      {loading}
       {error && <div>{error}</div>}
       {locationAllowed && <div>Joylashuv uchun ruxsat qilingan!</div>}
     </div>
