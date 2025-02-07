@@ -266,8 +266,8 @@ const CameraComponent: React.FC = () => {
       if (tg?.initDataUnsafe?.user) {
         setUser(tg.initDataUnsafe?.user);
       }
-       console.log(JSON.stringify(tg?.initData));
-       console.log(JSON.stringify(tg));
+       console.log((tg?.initData));
+       console.log((tg));
        
     }
     setLocationAllowed(false);
