@@ -30,10 +30,15 @@ const CameraComponent: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<any>('');
   const hi = window.location?.search
   const token = hi?.split("?hi=")[1]
-  const [toggle, setToggle] = useState<"user" | "environment">("user");
+  const [toggle, setToggle] = useState<boolean>(true);
   const [successText, setSuccessText] = useState("");
-  
 
+
+
+  useEffect(() => {
+    startCamera(toggle ? "user" : "environment");
+    getLocation();
+  }, [toggle]);
 
   async function getBrandCrums() {
     try {
@@ -55,7 +60,7 @@ const CameraComponent: React.FC = () => {
     }
   }
 
-  const startCamera = async () => {
+  const startCamera = async (facingMode?: "user" | "environment") => {
     try {
       setPhotoTaken(false);
       setVideoAllowed(false);
@@ -63,8 +68,11 @@ const CameraComponent: React.FC = () => {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
       }
+      const constraints = {
+        video: { facingMode },
+      };
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: toggle } });
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setCameraStream(stream);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -74,6 +82,9 @@ const CameraComponent: React.FC = () => {
     } catch (err) {
       setError("Kamerani yoqishda xatolik. Iltimos, ruxsat bering.");
     }
+  };
+  const toggleCamera = () => {
+    setToggle(prev => !prev);
   };
 
   const stopCamera = () => {
@@ -259,10 +270,6 @@ const CameraComponent: React.FC = () => {
 
   }, []);
 
-  useEffect(() => {
-    startCamera()
-  }, [toggle])
-
 
 
 
@@ -404,10 +411,7 @@ const CameraComponent: React.FC = () => {
                             <button onClick={captureImage} style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer" }}>
                               <i className="fa-solid fa-camera-retro"></i> Rasm olish
                             </button>
-                            <button onClick={() => {
-                              setToggle(toggle === "user" ? "environment" : "user");
-                              startCamera();
-                            }}
+                            <button onClick={toggleCamera}
 
                               style={{ padding: "12px 20px", borderRadius: "10px", width: "100%", border: "none", backgroundColor: "#E5E5FF", color: "#7F4DFF", cursor: "pointer", display: "flex", justifyContent: "center", gap: "5px" }}>
                               <i className="fa-solid fa-camera-retro"></i> <span style={{ whiteSpace: "nowrap" }}>Kamerani almashtirish</span>
