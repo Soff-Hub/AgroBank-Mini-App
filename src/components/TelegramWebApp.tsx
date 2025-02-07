@@ -222,10 +222,10 @@ const CameraComponent: React.FC = () => {
     ]
     : [];
 
-    
-    useEffect(() => {
-      startCamera(toggle ? "user" : "environment");
-    }, [toggle]);
+
+  useEffect(() => {
+    startCamera(toggle ? "user" : "environment");
+  }, [toggle]);
 
 
   useEffect(() => {
@@ -266,6 +266,8 @@ const CameraComponent: React.FC = () => {
         setUser(tg.initDataUnsafe?.user);
       }
     }
+    setLocationAllowed(false);
+    setVideoAllowed(false);
 
   }, []);
 
