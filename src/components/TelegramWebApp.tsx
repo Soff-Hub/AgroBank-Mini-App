@@ -379,7 +379,7 @@ const CameraComponent: React.FC = () => {
               borderRadius: "10px",
               color: "#7F4DFF",
               width: "100%"
-            }}> Telegram bot orqali kirishingiz kerak!</p>
+            }}> Telegram bot orqali qayta start bosing!</p>
           </div>
         </>
     }
