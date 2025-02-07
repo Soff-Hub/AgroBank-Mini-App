@@ -34,6 +34,12 @@ const CameraComponent: React.FC = () => {
   const [successText, setSuccessText] = useState("");
 
 
+  useEffect(() => {
+    getLocation();
+    startCamera(toggle ? "user" : "environment");
+    return () => stopCamera();
+  }, [toggle]);
+
   async function getBrandCrums() {
     try {
       const response = await axios.get(`https://bank.soffhub.uz/api/v1/common/blank/status/path/?parent=${dataPathFilter || ""}`)
@@ -257,10 +263,14 @@ const CameraComponent: React.FC = () => {
     }
   }, []);
 
+
+
   useEffect(() => {
-    startCamera(toggle ? "user" : "environment");
-    getLocation();
-  }, [toggle,loadPermes]);
+    if (loadPermes === 200) {
+      startCamera();
+    }
+  }, [loadPermes]);
+
 
 
 
