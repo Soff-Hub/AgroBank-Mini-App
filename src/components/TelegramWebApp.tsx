@@ -261,10 +261,14 @@ const CameraComponent: React.FC = () => {
     getPermissions()
     if (typeof window !== "undefined") {
       const tg = (window as any).Telegram?.WebApp;
-      tg?.expand();
+      tg.expand();
+      tg.ready();
       if (tg?.initDataUnsafe?.user) {
         setUser(tg.initDataUnsafe?.user);
       }
+       console.log(JSON.stringify(tg?.initData));
+       console.log(JSON.stringify(tg));
+       
     }
     setLocationAllowed(false);
     setVideoAllowed(false);
