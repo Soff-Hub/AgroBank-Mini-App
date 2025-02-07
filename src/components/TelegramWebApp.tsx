@@ -31,7 +31,7 @@ const CameraComponent: React.FC = () => {
   const hi = window.location?.search
   const token = hi?.split("?hi=")[1]
 
-   
+
 
   async function getBrandCrums() {
     try {
@@ -257,6 +257,8 @@ const CameraComponent: React.FC = () => {
   }, []);
 
 
+
+
   return (<>
     {
       loadPermes === 200 ?
@@ -293,12 +295,12 @@ const CameraComponent: React.FC = () => {
               }
               {statusID?.id &&
                 <>
-                  {statusID?.requirement !== "not_money_and_date" && <div style={{ width: "100%" }}>
+                  {(statusID?.requirement && statusID?.requirement !== "not_money_and_date") && <div style={{ width: "100%" }}>
                     <DatePicker onChange={onChange} onFocus={() => setErrors((prev: any) => ({ ...prev, payment_date: "" }))} style={{ height: "39.5px", marginBottom: "5px", width: "100%" }} />
                     {errors?.payment_date && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_date}</p>}
                   </div>}
 
-                  {(statusID?.requirement === "ten_day_in_month") && <div style={{ marginBottom: "10px" }}>
+                  {(statusID?.requirement && statusID?.requirement === "ten_day_in_month") && <div style={{ marginBottom: "10px" }}>
                     <InputNumber onFocus={() => setErrors((prev: any) => ({ ...prev, payment_amount: "" }))} type="number" placeholder="To'lov summasi" value={price} onChange={(e) => setPrice(e)} style={{ height: "39.5px", marginBottom: "3px", width: "100%" }} />
                     {errors?.payment_amount && <p style={{ color: "red", margin: "0", textAlign: "start" }}>{errors?.payment_amount}</p>}
 
