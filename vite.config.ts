@@ -7,4 +7,8 @@ export default defineConfig({
   optimizeDeps: {
     include: ["antd"],
   },
+  server: {
+    host: true,
+    port: 3737
+}
 })
