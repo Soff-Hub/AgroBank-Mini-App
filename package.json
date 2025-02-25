@@ -7,7 +7,7 @@
     "dev": "vite",
    "build": "tsc && vite build",
     "lint": "eslint .",
-    "start": "vite preview --port 3737",
+    "start": "vite preview --port 3838",
     "preview": "vite preview"
   },
   "dependencies": {
