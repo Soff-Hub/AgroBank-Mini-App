@@ -42,7 +42,7 @@ const CameraComponent: React.FC = () => {
 
   async function getBrandCrums() {
     try {
-      const response = await axios.get(`https://bank.soffhub.uz/api/v1/common/blank/status/path/?parent=${dataPathFilter || ""}`)
+      const response = await axios.get(`http://172.16.20.178:8000/api/v1/common/blank/status/path/?parent=${dataPathFilter || ""}`)
       setDataPath(response?.data)
     } catch (error) {
       console.log(error);
@@ -52,7 +52,7 @@ const CameraComponent: React.FC = () => {
 
   async function getStatusData() {
     try {
-      const response = await axios.get(`https://bank.soffhub.uz/api/v1/common/blank/status/?parent=${dataPathFilter || ''}`)
+      const response = await axios.get(`http://172.16.20.178:8000/api/v1/common/blank/status/?parent=${dataPathFilter || ''}`)
       setData(response?.data)
     } catch (error) {
       console.log(error);
@@ -178,7 +178,7 @@ const CameraComponent: React.FC = () => {
         formData.append("payment_date", dateChange);
       }
 
-      const response = await axios.post("https://bank.soffhub.uz/api/v1/common/blank/", formData, {
+      const response = await axios.post("https://172.16.20.178:8000/api/v1/common/blank/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "hi": token,
@@ -234,7 +234,7 @@ const CameraComponent: React.FC = () => {
 
   async function getPermissions() {
     try {
-      const response = await axios.get(`https://bank.soffhub.uz/api/v1/common/employee/check/`, {
+      const response = await axios.get(`https://172.16.20.178:8000/api/v1/common/employee/check/`, {
         headers: {
           "Content-Type": "application/json",
           "hi": token,
