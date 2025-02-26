@@ -178,7 +178,7 @@ const CameraComponent: React.FC = () => {
         formData.append("payment_date", dateChange);
       }
 
-      const response = await axios.post("https://172.16.20.178:8000/api/v1/common/blank/", formData, {
+      const response = await axios.post("http://172.16.20.178:8000/api/v1/common/blank/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "hi": token,
@@ -234,7 +234,7 @@ const CameraComponent: React.FC = () => {
 
   async function getPermissions() {
     try {
-      const response = await axios.get(`https://172.16.20.178:8000/api/v1/common/employee/check/`, {
+      const response = await axios.get(`http://172.16.20.178:8000/api/v1/common/employee/check/`, {
         headers: {
           "Content-Type": "application/json",
           "hi": token,
